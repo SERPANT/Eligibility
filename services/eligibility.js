@@ -1,5 +1,9 @@
 const axios = require('axios');
 
+/**
+ * 
+ * @param {*} patientAddAppointment 
+ */
 async function addEligibility(patientAddAppointment) {
   const eliligible = patientAddAppointment.map((appointment) => {
     const {
