@@ -111,9 +111,7 @@ async function fetchApp() {
 
 }
 
-setTimeout(() => {
-  fetchApp();
-}, 10000);
+setTimeout(fetchApp, 10000);
 
 
 // re check eligibility

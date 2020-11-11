@@ -28,7 +28,8 @@ async function updateAppointments(appointments) {
 
     const data = {
       svna_eligibilitystatus: eligible ? 153940000 : 153940001,
-      svna_reaons_for_failed_eligibility: responseDesc ? responseDesc : null
+      svna_reaons_for_failed_eligibility: responseDesc ? responseDesc : null,
+      svna_recheckeligibility: false
     }
 
     return http
