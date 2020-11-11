@@ -6,7 +6,7 @@ const http = require('../util/http');
  */
 async function fetchAppointment(count) {
 
-  const name = "BS Washington – Regence"
+  const name = "BC Washington State – Premera"
 
   const encodedName = encodeURIComponent(name);
   try{
