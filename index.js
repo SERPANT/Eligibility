@@ -6,12 +6,15 @@ const appointmentServices = require('./services/appointment');
 const eligibilityServices = require('./services/eligibility');
 const insuranceOrganizationService = require('./services/insuranceOrganization');
 
-const count = 3;
-let test = 0;
+const config = require('./config')
+
+const count = config.BATCH_COUNT;
+const noumberOfLoops = config.NUMBER_OF_LOOP;
+let currentCount = 0;
 
 async function fetchApp() {
 
-  if(test == 10) return;
+  if(currentCount == noumberOfLoops) return;
 
   const {appointments, error: appointmentError} = await appointmentServices.fetchAppointment(count);
 
@@ -80,14 +83,30 @@ async function fetchApp() {
 
   },[])
 
-  console.log(noErrorEligibilityAppointment);
+  console.log("Update appointment in dynamics --------------------------------");
+
+  const updatedList = await appointmentServices.updateAppointments(noErrorEligibilityAppointment);
+
+  updatedList.forEach(({appointmentId, appointmentUpdated, error}) => {
+
+    if(error) {
+      console.log("update failed on appointment: " + appointmentId, "  Error: ",  error);
+
+      return;
+    }
+
+
+    console.log("Updated Appointment : ", appointmentId)
+
+
+  })
 
   console.log('----------------------------------------------------');
   console.log('');
 
   console.log('next loop -------------------------')
 
-  test++;
+  currentCount++;
   fetchApp();
 
 }

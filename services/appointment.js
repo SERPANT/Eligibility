@@ -6,8 +6,11 @@ const http = require('../util/http');
  */
 async function fetchAppointment(count) {
 
+  const name = "BS Washington – Regence"
+
+  const encodedName = encodeURIComponent(name);
   try{
-  const url = `${config.baseUrl}/msemr_appointmentemrs?$select=svna_member_id,_msemr_actorpatient_value,svna_health_insurance_company&$filter=svna_eligibilitystatus eq null and svna_health_insurance_company ne null&$top=${count}`;
+  const url = `${config.baseUrl}/msemr_appointmentemrs?$select=svna_member_id,_msemr_actorpatient_value,svna_health_insurance_company&$filter=svna_eligibilitystatus eq null and svna_health_insurance_company eq '${encodedName}'&$top=${count}`;
 
   const {
     data: { value },
@@ -24,13 +27,14 @@ async function updateAppointments(appointments) {
     const { activityid, eligible, responseDesc } = appointment;
 
     const data = {
-      svna_eligibilitystatus: eligible
+      svna_eligibilitystatus: eligible ? 153940000 : 153940001,
+      svna_reaons_for_failed_eligibility: responseDesc ? responseDesc : null
     }
 
     return http
-      .post(
+      .patch(
         `${config.baseUrl}/msemr_appointmentemrs(${activityid})`,
-        data
+        {data}
       )
       .then(() => {
         return {

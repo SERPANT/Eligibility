@@ -10,6 +10,9 @@ const ELIGIBILITY_USER = process.env.ELIGIBILITY_USER;
 const ELIGIBILITY_PASS = process.env.ELIGIBILITY_PASS;
 const PHICURE_ELIGIBILITY_API = process.env.PHICURE_ELIGIBILITY_API;
 
+const BATCH_COUNT = process.env.BATCH_COUNT;
+const NUMBER_OF_LOOP = process.env.NUMBER_OF_LOOP; 
+
 const ENTITY_END_POINTS = {
   patient: 'contacts',
   contacts: 'contacts',
@@ -23,6 +26,8 @@ const ENTITY_END_POINTS = {
 };
 
 const config = {
+  BATCH_COUNT,
+  NUMBER_OF_LOOP,
   baseUrl: BASE_URL,
   clientId: CLIENT_ID,
   clientSecret: CLIENT_SECRET,
