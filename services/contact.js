@@ -13,10 +13,18 @@ async function addPatient(appointments) {
         const { data } = res;
 
         return {
+         contactAppointment : {
           ...appointment,
           ...data,
+          },
+          error : null
         };
-      });
+      }).catch((error) => {
+        return{
+          contactAppointment: appointment,
+          error
+        }
+      })
   });
 
   return Promise.all(appointmentDetailPromise);

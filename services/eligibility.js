@@ -39,10 +39,11 @@ async function addEligibility(patientAddAppointment) {
 }
 
 function postEligibilityRequest(data, appointment) {
+
   return axios
     .post('https://svna-portal-api-dev.azurewebsites.net/api/eligibility', data)
     .then((res) => {
-      let t = {
+      let eligibilityAppointment = {
         ...appointment,
         eligible: res.data.isEligible,
       };
@@ -50,17 +51,23 @@ function postEligibilityRequest(data, appointment) {
       if (!res.data.isEligible) {
         const { responseDesc, planDetails } = res.data.error.response;
 
-        t = {
-          ...t,
+        eligibilityAppointment = {
+          ...eligibilityAppointment,
           responseDesc,
           planDetails,
         };
       }
 
-      return t;
+      return {
+        eligibilityAppointment,
+        error: null
+      };
     })
-    .catch((err) => {
-      console.log('Failed-------------------------------------', err);
+    .catch((error) => {
+      return {
+        eligibilityAppointment: appointment,
+        error
+      }
     });
 }
 
