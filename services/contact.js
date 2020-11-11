@@ -1,6 +1,10 @@
 const http = require('../util/http');
 const config = require('../config');
 
+/**
+ * 
+ * @param {*} appointments 
+ */
 async function addPatient(appointments) {
   const appointmentDetailPromise = appointments.map((appointment) => {
     const { _msemr_actorpatient_value } = appointment;
