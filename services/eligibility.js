@@ -1,5 +1,7 @@
 const axios = require('axios');
 
+const config = require('../config')
+
 /**
  * 
  * @param {*} patientAddAppointment 
@@ -21,11 +23,13 @@ async function addEligibility(patientAddAppointment) {
       birthDateObj.getMonth() + 1
     }/${birthDateObj.getDate()}/${birthDateObj.getFullYear()}`;
 
+    const patientDateOfService = new Date(appointment.svna_appintmentdate);
+
     const data = {
       patientAddress: address1_line1,
       patientCity: address1_city,
       patientDateOfBirth,
-      patientDateofService: '10/20/2020',
+      patientDateofService: `${patientDateOfService.getMonth() + 1}/${patientDateOfService.getDate()}/${patientDateOfService.getFullYear()}`,
       patientFirstName: firstname,
       patientGender: 'F',
       patientLastName: lastname,
@@ -45,7 +49,7 @@ async function addEligibility(patientAddAppointment) {
 function postEligibilityRequest(data, appointment) {
 
   return axios
-    .post('https://svna-portal-api-dev.azurewebsites.net/api/eligibility', data)
+    .post(config.ELIGIBILITY_URL, data)
     .then((res) => {
       let eligibilityAppointment = {
         ...appointment,

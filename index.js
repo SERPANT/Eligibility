@@ -9,23 +9,36 @@ const insuranceOrganizationService = require('./services/insuranceOrganization')
 const config = require('./config')
 
 const count = config.BATCH_COUNT;
-const noumberOfLoops = config.NUMBER_OF_LOOP;
-let currentCount = 0;
+
+let startDate = "2020-09-08"
+let timeoutRef;
+
+let end = false;
+
+const fetchAppError = {
+  END_LOOP: -1,
+  INCREMENT_DATE: 1,
+  RETRY: 2,
+  ALL_DONE: 0
+}
 
 async function fetchApp() {
 
-  if(currentCount == noumberOfLoops) return;
-
-  const {appointments, error: appointmentError} = await appointmentServices.fetchAppointment(count);
+  const {appointments, error: appointmentError} = await appointmentServices.fetchAppointment(count, startDate);
 
   if(appointmentError)
   {
-    console.log("fetching appointments failed", appointmentError);
+    console.log("fetching appointments failed: ", appointmentError);
 
-    return;
+    return fetchAppError.END_LOOP;
   }
 
-  console.log('fetching patient ---------');
+  if(appointments.length === 0)
+  {
+    return fetchAppError.INCREMENT_DATE;
+  }
+
+  console.log('fetching patient -------------------------------------------------------');
 
   const patientAddAppointment = await contactServices.addPatient(appointments);
 
@@ -68,11 +81,13 @@ async function fetchApp() {
 
   const eligibleAddedAppointment = await eligibilityServices.addEligibility(noErrorAppointmentWithPayerId);
 
-
   const noErrorEligibilityAppointment = eligibleAddedAppointment.reduce((list, {eligibilityAppointment, error}) => {
 
     if(error) {
-      console.log("failed to put payerid on appointment: " + eligibilityAppointment.activityid, "  Error: ",  error);
+
+      console.log("ERROR CHECK: ", eligibilityAppointment);
+
+      console.log("failed to check eligibility " + eligibilityAppointment.activityid, "  Error: ",  error);
 
       return list;
     }
@@ -101,18 +116,42 @@ async function fetchApp() {
 
   })
 
-  console.log('----------------------------------------------------');
-  console.log('');
-
-  console.log('next loop -------------------------')
-
-  currentCount++;
-  fetchApp();
-
+  return fetchAppError.ALL_DONE;
 }
 
-setTimeout(fetchApp, 10000);
 
+async function start() {
 
-// re check eligibility
-// failed description
+  let status; 
+
+  while(!end)
+  {
+    status = await fetchApp();
+
+    if(status === fetchAppError.END_LOOP)
+    {
+      end = true;
+      break;
+    }
+
+    if(status === fetchAppError.INCREMENT_DATE)
+    {
+      currentDate = new Date(startDate);
+
+      var newDate = new Date(currentDate.setTime( currentDate.getTime() + 7 * 86400000 ));
+
+      startDate = `${newDate.getFullYear()}-${newDate.getMonth() + 1}-${newDate.getDate()}`;
+
+      console.log("increment date");
+    }
+
+    console.log('----------------------------------------------------');
+    console.log('');
+  
+    console.log('next loop ----------------------------------------------');
+  }
+
+  clearTimeout(timeoutRef);
+}
+
+timeoutRef = setTimeout(start, 10000);

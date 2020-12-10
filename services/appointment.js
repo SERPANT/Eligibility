@@ -4,18 +4,21 @@ const http = require('../util/http');
 /**
  * Fetch appointments
  */
-async function fetchAppointment(count) {
+async function fetchAppointment(count, date) {
 
-  const name = "BC Washington State – Premera"
+ const name = "BC Washington State – Premera"
 
   const encodedName = encodeURIComponent(name);
   try{
-  const url = `${config.baseUrl}/msemr_appointmentemrs?$select=svna_member_id,_msemr_actorpatient_value,svna_health_insurance_company&$filter=svna_eligibilitystatus eq null and svna_health_insurance_company eq '${encodedName}'&$top=${count}`;
+  
+    const url = `${config.baseUrl}/msemr_appointmentemrs?$select=svna_appintmentdate,svna_member_id,_msemr_actorpatient_value,svna_health_insurance_company&$filter=svna_eligibilitystatus eq null and svna_health_insurance_company eq '${encodedName}' and svna_appintmentdate eq ${date} &$top=${count}`;
 
+    console.log(url);
   const {
     data: { value },
   } = await http.get(url);
 
+  console.log("appointment", value);
   return {appointments: value, error: null};
 }catch(error){
   return {appointments : null, error }

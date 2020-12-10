@@ -1,6 +1,7 @@
 const BASE_URL = process.env.BASE_URL;
 const POWERAPPS_ENV_URL = process.env.POWER_APPS_ENV_URL;
 const AUTHENTICATION_URL = process.env.AUTHENTICATION_URL;
+const ELIGIBILITY_URL = process.env.ELIGIBILITY;
 
 const PORT = process.env.PORT;
 const CLIENT_ID = process.env.CLIENT_ID;
@@ -30,6 +31,7 @@ const config = {
   NUMBER_OF_LOOP,
   baseUrl: BASE_URL,
   clientId: CLIENT_ID,
+  ELIGIBILITY_URL: ELIGIBILITY_URL,
   clientSecret: CLIENT_SECRET,
   powerAppsEnvURL: POWERAPPS_ENV_URL,
   authenticationUrl: AUTHENTICATION_URL,
