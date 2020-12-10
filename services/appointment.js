@@ -18,7 +18,6 @@ async function fetchAppointment(count, date) {
     data: { value },
   } = await http.get(url);
 
-  console.log("appointment", value);
   return {appointments: value, error: null};
 }catch(error){
   return {appointments : null, error }
@@ -31,7 +30,7 @@ async function updateAppointments(appointments) {
 
     const data = {
       svna_eligibilitystatus: eligible ? 153940000 : 153940001,
-      svna_reaons_for_failed_eligibility: responseDesc ? responseDesc : null,
+      svna_reaons_for_failed_eligibility: planDetails ? planDetails : null,
       svna_recheckeligibility: false
     }
 
