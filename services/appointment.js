@@ -26,7 +26,7 @@ async function fetchAppointment(count, date) {
 
 async function updateAppointments(appointments) {
   const appointmentDetailPromise = appointments.map((appointment) => {
-    const { activityid, eligible, responseDesc } = appointment;
+    const { activityid, eligible, planDetails  } = appointment;
 
     const data = {
       svna_eligibilitystatus: eligible ? 153940000 : 153940001,
