@@ -72,9 +72,21 @@ function postEligibilityRequest(data, appointment) {
       };
     })
     .catch((error) => {
+
+      const errorMessage = error.response.data.error.message;
+
+      let eligibilityAppointment = {
+        ...appointment,
+        eligible: false,
+      };
+
       return {
-        eligibilityAppointment: appointment,
-        error
+        eligibilityAppointment: {
+          ...eligibilityAppointment,
+          responseDesc:  errorMessage,
+          planDetails: errorMessage
+        },
+        error: error
       }
     });
 }

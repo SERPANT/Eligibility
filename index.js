@@ -100,9 +100,7 @@ async function fetchApp() {
 
       console.log("ERROR CHECK: ", eligibilityAppointment);
 
-      console.log("failed to check eligibility " + eligibilityAppointment.activityid, "  Error: ",  error);
-
-      return list;
+      console.log("failed to check eligibility " + eligibilityAppointment.activityid, "  Error: ",  error.response.data.error.message);
     }
 
     list.push(eligibilityAppointment);
