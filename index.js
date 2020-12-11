@@ -10,21 +10,34 @@ const config = require('./config')
 
 const count = config.BATCH_COUNT;
 
-let startDate = "2020-09-08"
+let startDate = "2020-08-20";
+let resetDate = "2020-08-20";
 let timeoutRef;
 
 let end = false;
+
+const listOfInsuranceOrgainzation = [
+  "BC Washington State - Premera",
+  "Aetna Health Plan – PPO",
+  "BS Washington – Regence",
+  "UnitedHealthcare"
+];
+
+let currentOrganization = 0;
 
 const fetchAppError = {
   END_LOOP: -1,
   INCREMENT_DATE: 1,
   RETRY: 2,
-  ALL_DONE: 0
+  ALL_DONE: 0,
+  CHANGE_ORGANIZATION: 3
 }
 
 async function fetchApp() {
 
-  const {appointments, error: appointmentError} = await appointmentServices.fetchAppointment(count, startDate);
+  console.log("---------------------------------------------------------");
+  console.log("Running Loop for :  " + listOfInsuranceOrgainzation[currentOrganization])
+  const {appointments, error: appointmentError} = await appointmentServices.fetchAppointment(count, startDate, listOfInsuranceOrgainzation[currentOrganization]);
 
   if(appointmentError)
   {
@@ -140,9 +153,27 @@ async function start() {
 
       var newDate = new Date(currentDate.setTime( currentDate.getTime() + 7 * 86400000 ));
 
-      startDate = `${newDate.getFullYear()}-${newDate.getMonth() + 1}-${newDate.getDate()}`;
+      if(newDate.getFullYear() == "2021")
+      {
+        startDate = resetDate;
 
-      console.log("increment date");
+        currentOrganization++;
+
+        console.log("Increment organization");
+
+        if(currentOrganization >= listOfInsuranceOrgainzation.length)
+        {
+          end = true;
+
+          break;
+        }
+
+      } else{
+
+        startDate = `${newDate.getFullYear()}-${newDate.getMonth() + 1}-${newDate.getDate()}`;
+
+        console.log("increment date");
+      }
     }
 
     console.log('----------------------------------------------------');

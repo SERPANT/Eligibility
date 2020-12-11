@@ -4,11 +4,9 @@ const http = require('../util/http');
 /**
  * Fetch appointments
  */
-async function fetchAppointment(count, date) {
+async function fetchAppointment(count, date, organizationName) {
 
- const name = "BC Washington State – Premera"
-
-  const encodedName = encodeURIComponent(name);
+  const encodedName = encodeURIComponent(organizationName);
   try{
   
     const url = `${config.baseUrl}/msemr_appointmentemrs?$select=svna_appintmentdate,svna_member_id,_msemr_actorpatient_value,svna_health_insurance_company&$filter=svna_eligibilitystatus eq null and svna_health_insurance_company eq '${encodedName}' and svna_appintmentdate eq ${date} &$top=${count}`;
